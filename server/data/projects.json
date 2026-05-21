@@ -1,0 +1,56 @@
+[
+  {
+    "id": "proj-1",
+    "name": "LintFile",
+    "description": "一个简单的 Android 平台的文件管理器，纯 Kotlin 编写，支持浏览和管理设备文件。",
+    "techs": [
+      "Kotlin",
+      "Android"
+    ],
+    "iconType": "android",
+    "github": "https://github.com/qbhx224/LintFile",
+    "stars": 1,
+    "fork": false
+  },
+  {
+    "id": "proj-2",
+    "name": "iOS App Development Advanced",
+    "description": "iOS 高级应用开发课程学习资料与示例代码，涵盖 iOS 开发进阶知识。",
+    "techs": [
+      "Swift",
+      "iOS",
+      "Xcode"
+    ],
+    "iconType": "swift",
+    "github": "https://github.com/qbhx224/iOS-App-Development-Advanced",
+    "stars": 0,
+    "fork": false
+  },
+  {
+    "id": "proj-3",
+    "name": "IOS-APPLICATION-DEVELOPMENT-FUNDAMENTALS",
+    "description": "iOS 应用开发基础课程（大一下），学习 iOS 开发入门知识与实践。",
+    "techs": [
+      "Swift",
+      "iOS",
+      "Xcode"
+    ],
+    "iconType": "swift",
+    "github": "https://github.com/qbhx224/IOS-APPLICATION-DEVELOPMENT-FUNDAMENTALS",
+    "stars": 0,
+    "fork": false
+  },
+  {
+    "id": "proj-4",
+    "name": "SWIFT-Basics",
+    "description": "大一 Swift 语言学习内容，包含基础语法、UI 组件和实战练习。",
+    "techs": [
+      "Swift",
+      "Playground"
+    ],
+    "iconType": "swift",
+    "github": "https://github.com/qbhx224/SWIFT-Basics",
+    "stars": 0,
+    "fork": false
+  }
+]

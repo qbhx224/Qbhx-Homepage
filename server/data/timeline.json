@@ -1,0 +1,32 @@
+[
+  {
+    "id": "tl-1",
+    "year": "2023",
+    "title": "入学安徽商贸职业技术学院",
+    "description": "于移动互联应用技术专业学习，对编程产生浓厚兴趣。"
+  },
+  {
+    "id": "tl-2",
+    "year": "2024",
+    "title": "学习 Swift 与 iOS 开发",
+    "description": "系统学习 Swift 语言和 iOS 应用开发，完成多个课程项目。"
+  },
+  {
+    "id": "tl-3",
+    "year": "2024",
+    "title": "接触 Android 开发",
+    "description": "学习 Kotlin 和 Android 平台开发，二次开发 LintFile 文件管理器项目。"
+  },
+  {
+    "id": "tl-4",
+    "year": "2025",
+    "title": "全栈探索",
+    "description": "学习 Docker、Linux 运维，搭建个人博客和云服务器环境。"
+  },
+  {
+    "id": "tl-5",
+    "year": "2026",
+    "title": "持续学习中",
+    "description": "深入学习前端技术（Vue.js），开发个人主页，探索更多可能性。"
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "adminPasswordHash": "$2b$10$0ZE7Z9NQ9GiePxzF3SLjc.V86Ss/y8YhdeAH643yn4FD9WircOxV2",
+  "jwtSecret": "qbhx-homepage-secret-key-2026",
+  "backgrounds": [
+    {
+      "name": "背景一",
+      "url": "https://img.qbhx123.top/PicGo/background1.png",
+      "thumb": "https://img.qbhx123.top/PicGo/background1.png"
+    },
+    {
+      "name": "背景二",
+      "url": "https://img.qbhx123.top/PicGo/background3.webp",
+      "thumb": "https://img.qbhx123.top/PicGo/background3.webp"
+    }
+  ]
+}

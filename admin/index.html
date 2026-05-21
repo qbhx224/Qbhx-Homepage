@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理面板 - 千杯寒雪</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Login -->
+    <div v-if="!token" class="login-wrap">
+      <div class="login-card">
+        <h1>管理面板</h1>
+        <p>请输入管理员密码</p>
+        <form @submit.prevent="login">
+          <input v-model="password" type="password" placeholder="密码" autofocus />
+          <button type="submit" :disabled="logging">
+            {{ logging ? '登录中...' : '登录' }}
+          </button>
+          <p v-if="loginError" class="error">{{ loginError }}</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div v-else class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>管理面板</h2>
+        </div>
+        <nav class="sidebar-nav">
+          <a v-for="tab in tabs" :key="tab.key"
+             :class="{ active: activeTab === tab.key }"
+             @click="activeTab = tab.key">
+            {{ tab.label }}
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="/" target="_blank">查看主页</a>
+          <button @click="logout" class="logout-btn">退出登录</button>
+        </div>
+      </aside>
+
+      <main class="content">
+        <!-- Hero -->
+        <section v-if="activeTab === 'hero'">
+          <h3>个人信息</h3>
+          <div class="form-group">
+            <label>昵称</label>
+            <input v-model="hero.name" />
+          </div>
+          <div class="form-group">
+            <label>头像 URL</label>
+            <input v-model="hero.avatar" />
+          </div>
+          <div class="form-group">
+            <label>签名</label>
+            <input v-model="hero.bio" />
+          </div>
+          <div class="form-group">
+            <label>位置</label>
+            <input v-model="hero.location" />
+          </div>
+          <div class="form-group">
+            <label>学校</label>
+            <input v-model="hero.school" />
+          </div>
+          <div class="form-group">
+            <label>标签（逗号分隔）</label>
+            <input :value="hero.tags?.join(', ')" @input="hero.tags = $event.target.value.split(',').map(s => s.trim())" />
+          </div>
+          <div class="form-group">
+            <label>社交链接</label>
+            <div v-for="(link, i) in hero.socialLinks" :key="i" class="inline-row">
+              <input v-model="link.name" placeholder="名称" />
+              <input v-model="link.url" placeholder="URL" />
+              <select v-model="link.iconType">
+                <option v-for="opt in socialIconOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+              </select>
+              <button class="btn-danger btn-sm" @click="hero.socialLinks.splice(i, 1)">删除</button>
+            </div>
+            <button class="btn-secondary" @click="hero.socialLinks.push({ name: '', url: '', iconType: 'github' })">+ 添加链接</button>
+          </div>
+          <button class="btn-primary" @click="saveHero">保存</button>
+        </section>
+
+        <!-- Skills -->
+        <section v-if="activeTab === 'skills'">
+          <h3>技能分类</h3>
+          <div v-for="(cat, i) in skills" :key="cat.id" class="card">
+            <div class="card-header">
+              <input v-model="cat.name" class="card-title-input" />
+              <div class="card-actions">
+                <select v-model="cat.iconType">
+                  <option v-for="opt in skillIconOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                </select>
+                <button class="btn-danger btn-sm" @click="deleteItem('skills', i)">删除</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>技能项（逗号分隔）</label>
+              <input :value="cat.items?.join(', ')" @input="cat.items = $event.target.value.split(',').map(s => s.trim())" />
+            </div>
+            <button class="btn-primary btn-sm" @click="saveItem('skills', cat)">保存</button>
+          </div>
+          <button class="btn-secondary" @click="addSkill">+ 添加分类</button>
+        </section>
+
+        <!-- Projects -->
+        <section v-if="activeTab === 'projects'">
+          <h3>项目作品（从 GitHub 自动拉取）</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
+            勾选显示的项目，拖动排序。主页最多显示 4 个。
+          </p>
+          <div v-for="(proj, i) in allRepos" :key="proj.id" class="card project-card">
+            <div class="card-header">
+              <label class="checkbox-label" style="flex: 1;">
+                <input type="checkbox" :checked="!projectSort.hidden.includes(proj.id)"
+                       @change="toggleProject(proj.id)" />
+                <div>
+                  <strong>{{ proj.name }}</strong>
+                  <span v-if="proj.fork" class="fork-badge">Fork</span>
+                  <span class="lang-badge" v-if="proj.language">{{ proj.language }}</span>
+                </div>
+              </label>
+              <div class="card-actions">
+                <button class="btn-icon" :disabled="i === 0" @click="moveProject(i, -1)" title="上移">↑</button>
+                <button class="btn-icon" :disabled="i === allRepos.length - 1" @click="moveProject(i, 1)" title="下移">↓</button>
+              </div>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">{{ proj.description || '暂无描述' }}</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 0;">Stars: {{ proj.stars }}</p>
+          </div>
+          <button class="btn-primary" @click="saveProjectSortConfig" style="margin-top: 16px;">保存排序</button>
+        </section>
+
+        <!-- Timeline -->
+        <section v-if="activeTab === 'timeline'">
+          <h3>个人经历</h3>
+          <div v-for="(item, i) in timeline" :key="item.id" class="card">
+            <div class="card-header">
+              <input v-model="item.year" class="card-title-input" placeholder="年份" />
+              <button class="btn-danger btn-sm" @click="deleteItem('timeline', i)">删除</button>
+            </div>
+            <div class="form-group">
+              <label>标题</label>
+              <input v-model="item.title" />
+            </div>
+            <div class="form-group">
+              <label>描述</label>
+              <textarea v-model="item.description" rows="2"></textarea>
+            </div>
+            <button class="btn-primary btn-sm" @click="saveItem('timeline', item)">保存</button>
+          </div>
+          <button class="btn-secondary" @click="addTimeline">+ 添加经历</button>
+        </section>
+
+        <!-- Photos -->
+        <section v-if="activeTab === 'photos'">
+          <h3>相册</h3>
+          <div v-for="(photo, i) in photos" :key="photo.id" class="card">
+            <div class="card-header">
+              <input v-model="photo.title" class="card-title-input" />
+              <button class="btn-danger btn-sm" @click="deleteItem('photos', i)">删除</button>
+            </div>
+            <div class="form-group">
+              <label>图片 URL</label>
+              <input v-model="photo.src" />
+            </div>
+            <div class="form-group">
+              <label>描述</label>
+              <input v-model="photo.description" />
+            </div>
+            <button class="btn-primary btn-sm" @click="saveItem('photos', photo)">保存</button>
+          </div>
+          <button class="btn-secondary" @click="addPhoto">+ 添加照片</button>
+        </section>
+
+        <!-- Toast -->
+        <div v-if="toast" class="toast" :class="toast.type">{{ toast.msg }}</div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

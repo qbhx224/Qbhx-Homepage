@@ -1,0 +1,50 @@
+[
+  {
+    "id": "cat-1",
+    "name": "前端开发",
+    "iconType": "code",
+    "items": [
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "Vue.js",
+      "Typecho"
+    ]
+  },
+  {
+    "id": "cat-2",
+    "name": "移动开发",
+    "iconType": "mobile",
+    "items": [
+      "Swift",
+      "iOS Development",
+      "Kotlin",
+      "Android",
+      "微信小程序"
+    ]
+  },
+  {
+    "id": "cat-3",
+    "name": "后端与运维",
+    "iconType": "server",
+    "items": [
+      "Docker",
+      "Linux",
+      "Nginx",
+      "1Panel",
+      "Cloudflare"
+    ]
+  },
+  {
+    "id": "cat-4",
+    "name": "工具与平台",
+    "iconType": "tool",
+    "items": [
+      "Git",
+      "VS Code",
+      "FinalShell",
+      "GitHub",
+      "Vite"
+    ]
+  }
+]
