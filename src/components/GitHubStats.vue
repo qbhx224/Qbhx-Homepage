@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
 const sectionRef = ref(null)
@@ -46,6 +46,15 @@ const stats = ref({ repos: 0, followers: 0, following: 0, stars: 0 })
 const CACHE_KEY = 'github_stats_cache'
 const CACHE_TTL = 30 * 60 * 1000
 
+const revealCards = async () => {
+  await nextTick()
+  if (sectionRef.value) {
+    sectionRef.value.querySelectorAll('.scroll-reveal').forEach((el) => {
+      el.classList.add('is-revealed')
+    })
+  }
+}
+
 onMounted(async () => {
   const cached = localStorage.getItem(CACHE_KEY)
   if (cached) {
@@ -53,6 +62,7 @@ onMounted(async () => {
     if (Date.now() - timestamp < CACHE_TTL) {
       stats.value = data
       loading.value = false
+      revealCards()
       return
     }
   }
@@ -76,6 +86,7 @@ onMounted(async () => {
     stats.value = { repos: 4, followers: 0, following: 0, stars: 1 }
   } finally {
     loading.value = false
+    revealCards()
   }
 })
 </script>

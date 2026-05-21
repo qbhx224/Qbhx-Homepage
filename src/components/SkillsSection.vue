@@ -11,7 +11,7 @@
         ref="cardRefs"
       >
         <div class="card-header">
-          <span class="card-icon" v-html="category.icon"></span>
+          <span class="card-icon" v-html="skillIcons[category.iconType]"></span>
           <h3>{{ category.name }}</h3>
         </div>
         <div class="skill-tags">
@@ -28,43 +28,30 @@
 import { ref, onMounted } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useTilt3D } from '../composables/useTilt3D'
+import { skillIcons } from '../utils/icons'
 
 const sectionRef = ref(null)
 const cardRefs = ref([])
+const skills = ref([])
 
 useScrollReveal(sectionRef)
 
-onMounted(() => {
-  cardRefs.value.forEach((card) => {
-    if (card) {
-      useScrollReveal({ value: card })
-      useTilt3D({ value: card })
-    }
-  })
-})
+onMounted(async () => {
+  try {
+    const res = await fetch('/api/skills')
+    skills.value = await res.json()
+  } catch {
+    skills.value = []
+  }
 
-const skills = [
-  {
-    name: '前端开发',
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
-    items: ['HTML5', 'CSS3', 'JavaScript', 'Vue.js', 'Typecho']
-  },
-  {
-    name: '移动开发',
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>',
-    items: ['Swift', 'iOS Development', 'Kotlin', 'Android', '微信小程序']
-  },
-  {
-    name: '后端与运维',
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>',
-    items: ['Docker', 'Linux', 'Nginx', '1Panel', 'Cloudflare']
-  },
-  {
-    name: '工具与平台',
-    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>',
-    items: ['Git', 'VS Code', 'FinalShell', 'GitHub', 'Vite']
-  },
-]
+  setTimeout(() => {
+    cardRefs.value.forEach((card) => {
+      if (card) {
+        useTilt3D({ value: card })
+      }
+    })
+  }, 100)
+})
 </script>
 
 <style scoped>

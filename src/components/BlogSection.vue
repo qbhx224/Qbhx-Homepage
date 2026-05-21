@@ -34,41 +34,26 @@ import { useTilt3D } from '../composables/useTilt3D'
 
 const sectionRef = ref(null)
 const cardRefs = ref([])
+const posts = ref([])
 
 useScrollReveal(sectionRef)
 
-onMounted(() => {
-  cardRefs.value.forEach((card) => {
-    if (card) {
-      useScrollReveal({ value: card })
-      useTilt3D({ value: card })
-    }
-  })
-})
+onMounted(async () => {
+  try {
+    const res = await fetch('/api/blog?latest=true&limit=5')
+    posts.value = await res.json()
+  } catch {
+    posts.value = []
+  }
 
-const posts = [
-  {
-    title: '1Panel+Cloudflare DNS+ZeroSSL 一键申请SSL证书，永久自动续签',
-    excerpt: '全程免费、无需敲代码、支持单域名/通配符泛域名证书，配置一次后永久自动续签，彻底告别手动运维。',
-    date: '2026-05-17',
-    category: '实用教程',
-    url: 'https://blog.qbhx123.top/archives/28/',
-  },
-  {
-    title: '学习记录：云服务器配置Docker全过程',
-    excerpt: '作为纯小白，之前对服务器、命令行完全陌生，今天终于鼓起勇气动手，全程跟着步骤尝试，最终顺利完成。',
-    date: '2026-01-30',
-    category: '实用教程',
-    url: 'https://blog.qbhx123.top/archives/19/',
-  },
-  {
-    title: '魔改Typecho Butterfly主题：实现分享页面功能',
-    excerpt: '在博客中添加分享页面，展示喜欢的电影、动漫、书籍、游戏等内容，支持多分类展示和分页功能。',
-    date: '2026-01-24',
-    category: '实用教程',
-    url: 'https://blog.qbhx123.top/archives/18/',
-  },
-]
+  setTimeout(() => {
+    cardRefs.value.forEach((card) => {
+      if (card) {
+        useTilt3D({ value: card })
+      }
+    })
+  }, 300)
+})
 </script>
 
 <style scoped>

@@ -22,39 +22,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
 const sectionRef = ref(null)
+const timeline = ref([])
+
 useScrollReveal(sectionRef)
 
-const timeline = [
-  {
-    year: '2023',
-    title: '入学安徽商贸职业技术学院',
-    description: '开始计算机相关专业学习，对编程产生浓厚兴趣。'
-  },
-  {
-    year: '2024',
-    title: '学习 Swift 与 iOS 开发',
-    description: '系统学习 Swift 语言和 iOS 应用开发，完成多个课程项目。'
-  },
-  {
-    year: '2024',
-    title: '接触 Android 开发',
-    description: '学习 Kotlin 和 Android 平台开发，完成 LintFile 文件管理器项目。'
-  },
-  {
-    year: '2025',
-    title: '全栈探索',
-    description: '学习 Docker、Linux 运维，搭建个人博客和云服务器环境。'
-  },
-  {
-    year: '2026',
-    title: '持续学习中',
-    description: '深入学习前端技术（Vue.js），开发个人主页，探索更多可能性。'
+onMounted(async () => {
+  try {
+    const res = await fetch('/api/timeline')
+    timeline.value = await res.json()
+  } catch {
+    timeline.value = []
   }
-]
+})
 </script>
 
 <style scoped>
