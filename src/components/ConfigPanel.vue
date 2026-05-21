@@ -41,6 +41,18 @@
             </button>
           </div>
         </div>
+        <div class="config-group">
+          <label class="config-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
+            自定义光标
+          </label>
+          <div class="config-toggle-wrap">
+            <button class="config-toggle" :class="{ active: customCursor }" @click="toggleCursor">
+              <span class="toggle-dot"></span>
+            </button>
+            <span class="config-hint">{{ customCursor ? '已开启' : '已关闭' }}（仅桌面端）</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -58,6 +70,7 @@ const backgrounds = [
 
 const city = ref(localStorage.getItem('config_city') || 'Wuhu')
 const currentBg = ref(localStorage.getItem('config_bg') || backgrounds[0].url)
+const customCursor = ref(localStorage.getItem('config_cursor') === 'true')
 
 watch(city, (val) => {
   localStorage.setItem('config_city', val)
@@ -69,6 +82,12 @@ const selectBg = (url) => {
   localStorage.setItem('config_bg', url)
   const bgEl = document.querySelector('.page-bg')
   if (bgEl) bgEl.style.backgroundImage = `url(${url})`
+}
+
+const toggleCursor = () => {
+  customCursor.value = !customCursor.value
+  localStorage.setItem('config_cursor', customCursor.value.toString())
+  window.dispatchEvent(new CustomEvent('config-changed', { detail: { key: 'cursor', value: customCursor.value } }))
 }
 </script>
 
@@ -227,5 +246,41 @@ const selectBg = (url) => {
 
 .config-bg-btn:hover {
   border-color: var(--accent-light);
+}
+
+.config-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.config-toggle {
+  width: 48px;
+  height: 26px;
+  border-radius: 13px;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--transition);
+}
+
+.config-toggle.active {
+  background: var(--accent);
+}
+
+.toggle-dot {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  transition: transform var(--transition);
+}
+
+.config-toggle.active .toggle-dot {
+  transform: translateX(22px);
 }
 </style>

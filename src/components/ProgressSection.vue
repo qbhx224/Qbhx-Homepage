@@ -1,7 +1,7 @@
 <template>
-  <section class="progress-section">
+  <section class="progress-section" ref="sectionRef">
     <div class="progress-grid">
-      <div v-for="item in progressItems" :key="item.label" class="progress-card glass-card">
+      <div v-for="(item, index) in progressItems" :key="item.label" class="progress-card glass-card scroll-reveal" :data-delay="index + 1">
         <div class="progress-header">
           <span class="progress-icon" v-html="item.icon"></span>
           <span class="progress-label">{{ item.label }}</span>
@@ -18,6 +18,10 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
+const sectionRef = ref(null)
+useScrollReveal(sectionRef)
 
 const progressItems = ref([])
 let timer = null

@@ -1,10 +1,11 @@
 <template>
-  <section id="blog" class="section">
+  <section id="blog" class="section" ref="sectionRef">
     <h2 class="section-title">博客文章</h2>
     <p class="section-subtitle">记录技术思考与生活感悟</p>
     <div class="blog-grid">
-      <a v-for="post in posts" :key="post.title" :href="post.url"
-         target="_blank" rel="noopener noreferrer" class="blog-card">
+      <a v-for="(post, index) in posts" :key="post.title" :href="post.url"
+         target="_blank" rel="noopener noreferrer" class="blog-card scroll-reveal"
+         :data-delay="index + 1" ref="cardRefs">
         <div class="blog-meta">
           <span class="blog-date">{{ post.date }}</span>
           <span class="blog-category">{{ post.category }}</span>
@@ -27,6 +28,24 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useTilt3D } from '../composables/useTilt3D'
+
+const sectionRef = ref(null)
+const cardRefs = ref([])
+
+useScrollReveal(sectionRef)
+
+onMounted(() => {
+  cardRefs.value.forEach((card) => {
+    if (card) {
+      useScrollReveal({ value: card })
+      useTilt3D({ value: card })
+    }
+  })
+})
+
 const posts = [
   {
     title: '1Panel+Cloudflare DNS+ZeroSSL 一键申请SSL证书，永久自动续签',
@@ -71,12 +90,11 @@ const posts = [
   color: inherit;
   display: flex;
   flex-direction: column;
-  transition: all var(--transition);
   box-shadow: var(--shadow-sm);
+  will-change: transform;
 }
 
 .blog-card:hover {
-  transform: translateY(-4px);
   box-shadow: var(--shadow-md);
   border-color: var(--accent);
 }

@@ -3,6 +3,10 @@
     <div class="footer-content">
       <div class="footer-logo">千杯寒雪</div>
       <p class="footer-text">莫见乎隐，莫显乎微，故君子慎其独也</p>
+      <div class="visitor-count" v-if="visitorCount > 0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        第 {{ visitorCount }} 位访客
+      </div>
       <div class="footer-links">
         <a href="https://github.com/qbhx224" target="_blank" rel="noopener noreferrer">GitHub</a>
         <span class="divider">·</span>
@@ -18,7 +22,10 @@
 </template>
 
 <script setup>
+import { useVisitorCounter } from '../composables/useVisitorCounter'
+
 const year = new Date().getFullYear()
+const visitorCount = useVisitorCounter()
 </script>
 
 <style scoped>
@@ -43,9 +50,23 @@ const year = new Date().getFullYear()
 
 .footer-text {
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   font-size: 0.95rem;
   font-style: italic;
+}
+
+.visitor-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.visitor-count svg {
+  color: var(--accent);
 }
 
 .footer-links {

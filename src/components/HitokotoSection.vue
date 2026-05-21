@@ -1,6 +1,6 @@
 <template>
-  <section class="hitokoto-section">
-    <div class="hitokoto-card glass-card">
+  <section class="hitokoto-section" ref="sectionRef">
+    <div class="hitokoto-card glass-card scroll-reveal">
       <div class="hitokoto-header">
         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" class="quote-icon"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
         <span class="hitokoto-label">一言</span>
@@ -31,6 +31,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+
+const sectionRef = ref(null)
+useScrollReveal(sectionRef)
 
 const hitokoto = ref({ text: '', from: '', from_who: '', type: '' })
 const loading = ref(false)

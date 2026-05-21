@@ -1,9 +1,15 @@
 <template>
-  <section id="skills" class="section">
+  <section id="skills" class="section" ref="sectionRef">
     <h2 class="section-title">技能栈</h2>
     <p class="section-subtitle">我日常使用的技术和工具</p>
     <div class="skills-grid">
-      <div v-for="category in skills" :key="category.name" class="skill-card">
+      <div
+        v-for="(category, index) in skills"
+        :key="category.name"
+        class="skill-card scroll-reveal"
+        :data-delay="index + 1"
+        ref="cardRefs"
+      >
         <div class="card-header">
           <span class="card-icon" v-html="category.icon"></span>
           <h3>{{ category.name }}</h3>
@@ -19,6 +25,24 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useTilt3D } from '../composables/useTilt3D'
+
+const sectionRef = ref(null)
+const cardRefs = ref([])
+
+useScrollReveal(sectionRef)
+
+onMounted(() => {
+  cardRefs.value.forEach((card) => {
+    if (card) {
+      useScrollReveal({ value: card })
+      useTilt3D({ value: card })
+    }
+  })
+})
+
 const skills = [
   {
     name: '前端开发',
@@ -57,12 +81,11 @@ const skills = [
   border-radius: var(--radius-md);
   border: 1px solid var(--glass-border);
   padding: 28px;
-  transition: all var(--transition);
   box-shadow: var(--shadow-sm);
+  will-change: transform;
 }
 
 .skill-card:hover {
-  transform: translateY(-4px);
   box-shadow: var(--shadow-md);
 }
 

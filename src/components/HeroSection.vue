@@ -1,13 +1,13 @@
 <template>
-  <section id="about" class="hero">
-    <div class="hero-bg"></div>
+  <section id="about" class="hero" ref="heroRef">
+    <div class="hero-bg" ref="heroBgRef"></div>
     <div class="hero-content">
-      <div class="avatar-card">
+      <div class="avatar-card scroll-reveal" data-delay="1">
         <img src="https://img.qbhx123.top/qbhxlogo.png" alt="千杯寒雪" class="avatar-img" />
       </div>
-      <h1 class="hero-name">千杯寒雪</h1>
-      <p class="hero-bio">莫见乎隐，莫显乎微，故君子慎其独也</p>
-      <div class="hero-meta">
+      <h1 class="hero-name scroll-reveal" data-delay="2">千杯寒雪</h1>
+      <p class="hero-bio scroll-reveal" :class="{ 'no-cursor': typingComplete }" data-delay="3">{{ displayBio }}</p>
+      <div class="hero-meta scroll-reveal" data-delay="4">
         <span class="meta-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           安徽芜湖
@@ -17,12 +17,12 @@
           安徽商贸职业技术学院
         </span>
       </div>
-      <div class="hero-tags">
+      <div class="hero-tags scroll-reveal" data-delay="5">
         <span class="tag">Student</span>
         <span class="tag">Developer</span>
         <span class="tag">Mobile & Web</span>
       </div>
-      <div class="social-links">
+      <div class="social-links scroll-reveal" data-delay="6">
         <a href="https://github.com/qbhx224" target="_blank" rel="noopener noreferrer" class="social-btn">
           <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/></svg>
           <span>GitHub</span>
@@ -36,13 +36,51 @@
           <span>Bilibili</span>
         </a>
         <a href="mailto:contact@qbhx123.top" class="social-btn">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
           <span>Email</span>
         </a>
       </div>
     </div>
   </section>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useParallax } from '../composables/useParallax'
+
+const heroRef = ref(null)
+const heroBgRef = ref(null)
+const displayBio = ref('')
+const typingComplete = ref(false)
+const bioText = '莫见乎隐，莫显乎微，故君子慎其独也'
+
+useScrollReveal(heroRef)
+useParallax(heroRef)
+
+onMounted(() => {
+  // Trigger scroll reveal for all children after a small delay
+  setTimeout(() => {
+    if (heroRef.value) {
+      heroRef.value.querySelectorAll('.scroll-reveal').forEach((el) => {
+        el.classList.add('is-revealed')
+      })
+    }
+  }, 300)
+
+  // Typing effect
+  let i = 0
+  const timer = setInterval(() => {
+    if (i < bioText.length) {
+      displayBio.value += bioText[i]
+      i++
+    } else {
+      clearInterval(timer)
+      typingComplete.value = true
+    }
+  }, 80)
+})
+</script>
 
 <style scoped>
 .hero {
@@ -64,6 +102,8 @@
     radial-gradient(ellipse at 80% 20%, var(--hero-gradient-2) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 80%, var(--hero-gradient-3) 0%, transparent 50%);
   z-index: 0;
+  transform: translate(var(--px, 0), var(--py, 0));
+  transition: transform 0.4s ease;
 }
 
 .hero-content {
@@ -78,6 +118,11 @@
   border-radius: 50%;
   background: linear-gradient(135deg, var(--accent), var(--accent-light));
   padding: 3px;
+  transition: transform 0.3s ease;
+}
+
+.avatar-card:hover {
+  transform: scale(1.05);
 }
 
 .avatar-img {
@@ -105,6 +150,22 @@
   margin-bottom: 20px;
   max-width: 500px;
   font-style: italic;
+  min-height: 1.6em;
+}
+
+.hero-bio::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  color: var(--accent);
+}
+
+.hero-bio.no-cursor::after {
+  display: none;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
 
 .hero-meta {

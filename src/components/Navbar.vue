@@ -33,8 +33,11 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const navItems = [
   { id: 'about', label: '关于我' },
+  { id: 'timeline', label: '经历' },
+  { id: 'github', label: 'GitHub' },
   { id: 'skills', label: '技能' },
   { id: 'projects', label: '项目' },
+  { id: 'gallery', label: '相册' },
   { id: 'blog', label: '博客' },
 ]
 

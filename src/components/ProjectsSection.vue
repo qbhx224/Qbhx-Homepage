@@ -1,9 +1,15 @@
 <template>
-  <section id="projects" class="section">
+  <section id="projects" class="section" ref="sectionRef">
     <h2 class="section-title">项目作品</h2>
     <p class="section-subtitle">我在 GitHub 上的开源项目</p>
     <div class="projects-grid">
-      <div v-for="project in projects" :key="project.name" class="project-card">
+      <div
+        v-for="(project, index) in projects"
+        :key="project.name"
+        class="project-card scroll-reveal"
+        :data-delay="index + 1"
+        ref="cardRefs"
+      >
         <div class="project-header">
           <div class="project-icon">
             <span v-html="project.icon"></span>
@@ -34,6 +40,24 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useScrollReveal } from '../composables/useScrollReveal'
+import { useTilt3D } from '../composables/useTilt3D'
+
+const sectionRef = ref(null)
+const cardRefs = ref([])
+
+useScrollReveal(sectionRef)
+
+onMounted(() => {
+  cardRefs.value.forEach((card) => {
+    if (card) {
+      useScrollReveal({ value: card })
+      useTilt3D({ value: card })
+    }
+  })
+})
+
 const projects = [
   {
     name: 'LintFile',
@@ -88,12 +112,11 @@ const projects = [
   border-radius: var(--radius-md);
   border: 1px solid var(--glass-border);
   padding: 28px;
-  transition: all var(--transition);
   box-shadow: var(--shadow-sm);
+  will-change: transform;
 }
 
 .project-card:hover {
-  transform: translateY(-4px);
   box-shadow: var(--shadow-md);
 }
 
